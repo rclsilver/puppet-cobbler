@@ -45,6 +45,13 @@ Puppet::Type.type(:cobblerrepo).provide(:repo) do
     cobbler('reposync')
   end
 
+  # sets priority
+  def priority=(value)
+    cobbler('repo', 'edit', '--name=' + @resource[:name], '--priority=' + value.to_s)
+    @property_hash[:priority]=(value.to_s)
+    cobbler('reposync')
+  end
+
   # sets mirror
   def mirror=(value)
     cobbler('repo', 'edit', '--name=' + @resource[:name], '--mirror=' + value)
@@ -86,6 +93,7 @@ Puppet::Type.type(:cobblerrepo).provide(:repo) do
     
     # add properties
     self.arch           = @resource.should(:arch)          unless self.arch           == @resource.should(:arch)
+    self.priority       = @resource.should(:priority)      unless self.priority       == @resource.should(:priority)
     self.mirror_locally = @resource.should(:mirror_localy) unless self.mirror_locally == @resource.should(:mirror_locally)
     self.keep_updated   = @resource.should(:keep_updated)  unless self.keep_updated   == @resource.should(:keep_updated)
     self.comment        = @resource.should(:comment)       unless self.comment        == @resource.should(:comment)
